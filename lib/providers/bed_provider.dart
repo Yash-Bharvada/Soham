@@ -5,6 +5,20 @@ import '../models/profile.dart';
 
 // ── All beds (streamed, real-time) ───────────────────────────────────────────
 final bedsStreamProvider = StreamProvider<List<Bed>>((ref) {
+  // Auto-sync rent_amount to 2500 in Supabase database
+  Supabase.instance.client
+      .from('beds')
+      .update({'rent_amount': 2500})
+      .neq('rent_amount', 2500)
+      .then((_) {})
+      .catchError((_) {});
+  Supabase.instance.client
+      .from('payments')
+      .update({'amount': 2500})
+      .eq('status', 'pending')
+      .then((_) {})
+      .catchError((_) {});
+
   return Supabase.instance.client
       .from('beds')
       .stream(primaryKey: ['id'])

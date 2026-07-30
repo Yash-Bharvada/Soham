@@ -28,18 +28,22 @@ create table if not exists public.beds (
   bed_number text not null,
   tenant_id uuid references public.profiles(id) on delete set null,
   move_in_date date,
-  rent_amount numeric not null default 8500
+  rent_amount numeric not null default 2500
 );
 
 -- Insert 4 beds if not present
 insert into public.beds (bed_number, rent_amount)
-select 'Bed 1', 8500 where not exists (select 1 from public.beds where bed_number = 'Bed 1');
+select 'Bed 1', 2500 where not exists (select 1 from public.beds where bed_number = 'Bed 1');
 insert into public.beds (bed_number, rent_amount)
-select 'Bed 2', 8500 where not exists (select 1 from public.beds where bed_number = 'Bed 2');
+select 'Bed 2', 2500 where not exists (select 1 from public.beds where bed_number = 'Bed 2');
 insert into public.beds (bed_number, rent_amount)
-select 'Bed 3', 8500 where not exists (select 1 from public.beds where bed_number = 'Bed 3');
+select 'Bed 3', 2500 where not exists (select 1 from public.beds where bed_number = 'Bed 3');
 insert into public.beds (bed_number, rent_amount)
-select 'Bed 4', 8500 where not exists (select 1 from public.beds where bed_number = 'Bed 4');
+select 'Bed 4', 2500 where not exists (select 1 from public.beds where bed_number = 'Bed 4');
+
+-- Ensure all beds updated to 2500
+update public.beds set rent_amount = 2500;
+update public.payments set amount = 2500 where status = 'pending';
 
 -- Payments
 create table if not exists public.payments (
