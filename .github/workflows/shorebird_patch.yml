@@ -1,0 +1,63 @@
+name: Shorebird OTA Patch (Android & iOS)
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Target platform to patch'
+        required: true
+        default: 'both'
+        type: choice
+        options:
+          - 'both'
+          - 'android'
+          - 'ios'
+
+jobs:
+  patch-android:
+    name: Shorebird Patch Android
+    if: inputs.platform == 'both' || inputs.platform == 'android' || github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 1. Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 2. Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: 3. Set up Shorebird
+        uses: shorebirdtech/shorebird-action@v1
+        with:
+          shorebird-token: ${{ secrets.SHOREBIRD_TOKEN }}
+
+      - name: 4. Run Shorebird Patch Android
+        run: shorebird patch android --flutter-version=3.32.5 --force
+
+  patch-ios:
+    name: Shorebird Patch iOS
+    if: inputs.platform == 'both' || inputs.platform == 'ios' || github.event_name == 'push'
+    runs-on: macos-latest
+
+    steps:
+      - name: 1. Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 2. Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: 3. Set up Shorebird
+        uses: shorebirdtech/shorebird-action@v1
+        with:
+          shorebird-token: ${{ secrets.SHOREBIRD_TOKEN }}
+
+      - name: 4. Run Shorebird Patch iOS
+        run: shorebird patch ios --flutter-version=3.32.5 --force
