@@ -37,13 +37,15 @@ jobs:
       - name: 6. Build iOS App (Release Mode)
         run: flutter build ios --release --no-codesign
 
-      - name: 7. Compress App Bundle into Zip
+      - name: 7. Package into valid .ipa file
         run: |
           cd build/ios/iphoneos
-          zip -r Soham-iOS-Release.zip Runner.app
+          mkdir Payload
+          cp -r Runner.app Payload/
+          zip -r Soham.ipa Payload
 
-      - name: 8. Upload iOS Build Artifact
+      - name: 8. Upload iOS IPA Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Soham-iOS-Release
-          path: build/ios/iphoneos/Soham-iOS-Release.zip
+          name: Soham-iOS-IPA
+          path: build/ios/iphoneos/Soham.ipa
