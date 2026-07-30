@@ -24,6 +24,16 @@ Future<void> main() async {
     anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
   );
 
+  // Auto-clear invalid/clock-skewed session from local storage on startup
+  try {
+    final session = Supabase.instance.client.auth.currentSession;
+    if (session != null && session.isExpired) {
+      await Supabase.instance.client.auth.signOut();
+    }
+  } catch (_) {
+    await Supabase.instance.client.auth.signOut();
+  }
+
   // Initialize timezone safely across Web & Mobile
   tz.initializeTimeZones();
   try {

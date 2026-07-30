@@ -7,13 +7,21 @@ final currentProfileProvider = FutureProvider<Profile?>((ref) async {
   final user = Supabase.instance.client.auth.currentUser;
   if (user == null) return null;
 
-  final data = await Supabase.instance.client
-      .from('profiles')
-      .select()
-      .eq('id', user.id)
-      .maybeSingle();
+  try {
+    final data = await Supabase.instance.client
+        .from('profiles')
+        .select()
+        .eq('id', user.id)
+        .maybeSingle();
 
-  return data != null ? Profile.fromJson(data) : null;
+    return data != null ? Profile.fromJson(data) : null;
+  } catch (e) {
+    if (e.toString().contains('JWT issued at future') ||
+        e.toString().contains('PGRST303')) {
+      await Supabase.instance.client.auth.signOut();
+    }
+    return null;
+  }
 });
 
 // ── Auth service actions ──────────────────────────────────────────────────────
@@ -21,10 +29,22 @@ class AuthService {
   final _supabase = Supabase.instance.client;
 
   Future<AuthResponse> signIn(String email, String password) async {
-    return _supabase.auth.signInWithPassword(
-      email: email.trim(),
-      password: password,
-    );
+    try {
+      return await _supabase.auth.signInWithPassword(
+        email: email.trim(),
+        password: password,
+      );
+    } catch (e) {
+      if (e.toString().contains('JWT issued at future') ||
+          e.toString().contains('PGRST303')) {
+        await _supabase.auth.signOut();
+        return await _supabase.auth.signInWithPassword(
+          email: email.trim(),
+          password: password,
+        );
+      }
+      rethrow;
+    }
   }
 
   Future<AuthResponse> signUp({
