@@ -14,31 +14,35 @@ jobs:
       - name: 1. Checkout repository
         uses: actions/checkout@v4
 
-      - name: 2. Set up Java
+      - name: 2. Create .env asset file
+        run: |
+          cp .env.example .env
+
+      - name: 3. Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: 3. Set up Flutter
+      - name: 4. Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.32.5'
           channel: 'stable'
           cache: true
 
-      - name: 4. Get dependencies
+      - name: 5. Get dependencies
         run: flutter pub get
 
-      - name: 5. Build iOS App (Release Mode)
+      - name: 6. Build iOS App (Release Mode)
         run: flutter build ios --release --no-codesign
 
-      - name: 6. Compress App Bundle into Zip
+      - name: 7. Compress App Bundle into Zip
         run: |
           cd build/ios/iphoneos
           zip -r Soham-iOS-Release.zip Runner.app
 
-      - name: 7. Upload iOS Build Artifact
+      - name: 8. Upload iOS Build Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Soham-iOS-Release

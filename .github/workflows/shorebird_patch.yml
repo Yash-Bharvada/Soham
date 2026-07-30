@@ -25,18 +25,22 @@ jobs:
       - name: 1. Checkout repository
         uses: actions/checkout@v4
 
-      - name: 2. Set up Java
+      - name: 2. Create .env asset file
+        run: |
+          cp .env.example .env
+
+      - name: 3. Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: 3. Set up Shorebird
+      - name: 4. Set up Shorebird
         uses: shorebirdtech/shorebird-action@v1
         with:
           shorebird-token: ${{ secrets.SHOREBIRD_TOKEN }}
 
-      - name: 4. Run Shorebird Patch Android
+      - name: 5. Run Shorebird Patch Android
         run: shorebird patch android --flutter-version=3.32.5 --force
 
   patch-ios:
@@ -48,16 +52,20 @@ jobs:
       - name: 1. Checkout repository
         uses: actions/checkout@v4
 
-      - name: 2. Set up Java
+      - name: 2. Create .env asset file
+        run: |
+          cp .env.example .env
+
+      - name: 3. Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: 3. Set up Shorebird
+      - name: 4. Set up Shorebird
         uses: shorebirdtech/shorebird-action@v1
         with:
           shorebird-token: ${{ secrets.SHOREBIRD_TOKEN }}
 
-      - name: 4. Run Shorebird Patch iOS
+      - name: 5. Run Shorebird Patch iOS
         run: shorebird patch ios --flutter-version=3.32.5 --force
