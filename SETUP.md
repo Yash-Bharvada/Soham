@@ -23,7 +23,7 @@ PG_NAME=Soham
 ### Step B: Seed Owner Account
 1. In Supabase Dashboard, go to **Authentication** -> **Users** -> **Add User**.
 2. **Email**: `owner@soham.com`
-3. **Password**: `Soham@2025`
+3. **Password**: choose a strong password and store it outside the repository.
 4. Set User Metadata:
    ```json
    {
@@ -47,5 +47,5 @@ flutter run
 ```
 
 ### Credentials & Roles:
-- **Owner Account**: Log in with `owner@soham.com` / `Soham@2025` to access the Owner Dashboard.
+- **Owner Account**: Log in with `owner@soham.com` using the password currently set in Supabase Auth. Do not store or share owner passwords in the repository.
 - **Tenant Account**: Click "Create an account" on the login screen to register as a Tenant.
